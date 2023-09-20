@@ -28,7 +28,6 @@ public class Chercher {
 	private JTextField txtChercher;
 	private JTable tableFilms;
 	private ArrayList<Film> listeFilms;
-	// private ArrayList<Film> listeFilmsCherche = null;
 	ControleurFilm instance = ControleurFilm.getControleurFilm();
 
 	/**
@@ -51,10 +50,7 @@ public class Chercher {
 	 * Create the application.
 	 */
 	public Chercher() {
-		// listeFilms = new ArrayList<Film>();
 		initialize();
-		// this.listeFilms = instance.CtrF_GetAllFilms();
-		// montrerListeFilms();
 	}
 
 	/**
@@ -92,11 +88,6 @@ public class Chercher {
 		model.addColumn("Durée");
 		model.addColumn("Réalisateur");
 		model.addColumn("Pochette");
-		// for (Film film : listeFilms) {
-		// model.addRow(new Object[] { film.getIdf(), film.getTitre(), film.getDuree(),
-		// film.getRes(),
-		// film.getPochette()});
-		// }
 
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(55, 92, 416, 176);
@@ -106,11 +97,12 @@ public class Chercher {
 		btnrecherche.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String itemAChercher = txtChercher.getText();
+
 				if (chckbxidchercher.isSelected() == true) {
 					ControleurFilm instance = ControleurFilm.getControleurFilm();
 					Film lefilm = instance.CtrF_GetFilmById(Integer.parseInt(itemAChercher));
-					//System.out.println(lefilm.getDuree());
 					DefaultTableModel model = (DefaultTableModel) tableFilms.getModel();
+
 					model.addRow(new Object[] { lefilm.getIdf() + "", lefilm.getTitre(), lefilm.getDuree() + "",
 							lefilm.getRes(),
 							lefilm.getPochette() });
@@ -126,35 +118,38 @@ public class Chercher {
 				}
 			}
 		});
+
 		btnrecherche.setBounds(382, 28, 89, 23);
 		frame.getContentPane().add(btnrecherche);
 
 		// Creer la table
 		tableFilms = new JTable(model);
 		scrollPane.setViewportView(tableFilms);
-
 		JButton btnModifier = new JButton("Modifier");
+
 		btnModifier.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String numeroFilm = JOptionPane.showInputDialog(null, "Entrez le numéro du film à modifier :",
 						"MODIFIER FILM",
 						JOptionPane.PLAIN_MESSAGE);
+
 				ControleurFilm instance = ControleurFilm.getControleurFilm();
 				Film lefilm = instance.CtrF_GetFilmById(Integer.parseInt(numeroFilm));
 				Modifierfilm.main(lefilm);
 			}
 
 		});
+
 		btnModifier.setBounds(77, 287, 89, 23);
 		frame.getContentPane().add(btnModifier);
 
 		JButton btnAnnuler = new JButton("Annuler");
 		btnAnnuler.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// listeFilmsCherche.clear();
 				frame.dispose();
 			}
 		});
+
 		btnAnnuler.setBounds(351, 287, 89, 23);
 		frame.getContentPane().add(btnAnnuler);
 
@@ -178,22 +173,5 @@ public class Chercher {
 		frame.getContentPane().add(btnenlever);
 	}
 
-	// private void montrerListeFilms() {
-	// DefaultTableModel model = (DefaultTableModel) tableFilms.getModel();
-	// for (Film unFilm : listeFilms) {
-	// model.addRow(new Object[] { unFilm.getIdf(), unFilm.getTitre(),
-	// unFilm.getDuree(), unFilm.getRes(),
-	// unFilm.getPochette() });
-	// }
-	// }
-
-	// private void montrerListeFilmsAChercher() {
-	// DefaultTableModel model = (DefaultTableModel) tableFilms.getModel();
-	// for (Film unFilm : listeFilmsCherche) {
-	// model.addRow(new Object[] { unFilm.getIdf(), unFilm.getTitre(),
-	// unFilm.getDuree(), unFilm.getRes(),
-	// unFilm.getPochette() });
-	// }
-	// }
 
 }

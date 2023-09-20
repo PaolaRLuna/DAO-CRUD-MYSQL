@@ -10,28 +10,21 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-//DATTA ACCESS OBJECT
 public class DaoFilm implements IFilmDao {
     private static Connection conn = null;
     private static DaoFilm instanceDao = null;
 
     // MySQL
-    // private static final String PILOTE = "com.mysql.jdbc.Driver";
     private static final String URL_BD = "jdbc:mysql://localhost/mabdfilms";
     private static final String USAGER = "root";
     private static final String PASS = "";
-    // on cree les requetes
+    //Requetes
     private static final String SUPPRIMER = "DELETE FROM films WHERE idf=?";
     private static final String GET_ALL = "SELECT * FROM films ORDER BY idf";
     private static final String GET_BY_ID = "SELECT * FROM films WHERE idf=?";
     private static final String GET_BY_TITRE = "SELECT * FROM films WHERE titre=?";
     private static final String ENREGISTRER = "INSERT INTO films VALUES(0,?, ?, ?, ?)";
     private static final String MODIFIER = "UPDATE films SET titre=?, duree=?, res=?, pochette=? WHERE idf=?";
-
-    // Singleton de connexion à la BD
-    // getConnexion() est devenu une zonne critique.
-    // Pour ne pas avoir deux processus légers (threads) qui
-    // appellent au même temps getConnexion
 
     private DaoFilm() {
 
@@ -50,40 +43,34 @@ public class DaoFilm implements IFilmDao {
 
     public static synchronized DaoFilm getFilmDao() {
         try {
-            // Class.forName(PILOTE);
             if (instanceDao == null) {
-                instanceDao = new DaoFilm(); // quand je cree une instance la classe on cree une connexion
+                instanceDao = new DaoFilm(); 
                 conn = DriverManager.getConnection(URL_BD, USAGER, PASS);
-                // cela fait pas partie du singleton
             }
             return instanceDao;
         } catch (Exception e) {
-            // e.printStackTrace();
+
             throw new RuntimeException(e);
         }
     }
 
-
-
     // Create
     public String MdlF_Enregistrer(Film film) {
         PreparedStatement stmt = null;
-        try { // requete est dans enregistrer, pour obtenir la clé qui a été generé on utilise
-              // return_generated keys
-            //conn = getConnection();
+        try { 
             conn = DriverManager.getConnection(URL_BD, USAGER, PASS);
             stmt = conn.prepareStatement(ENREGISTRER, Statement.RETURN_GENERATED_KEYS);
-            stmt.setString(1, film.getTitre()); //cada columna corresponde a los signos de interrogacion de la requete/query
+            stmt.setString(1, film.getTitre()); 
             stmt.setInt(2, film.getDuree());
             stmt.setString(3, film.getRes());
             stmt.setString(4, film.getPochette());
 
-            stmt.executeUpdate(); // il execute la requete
-            ResultSet rs = stmt.getGeneratedKeys(); //
+            stmt.executeUpdate();
+            ResultSet rs = stmt.getGeneratedKeys(); 
 
             if (rs.next()) {
-                film.setIdf(rs.getInt(1)); // int est dans la premier colonne qui contient la clé, on veut la metre dans
-                                           // la classe pour definir le num de film
+                film.setIdf(rs.getInt(1)); 
+
             }
             return "Film bien enregistré";
         } catch (SQLException e) {
@@ -95,18 +82,16 @@ public class DaoFilm implements IFilmDao {
     }
 
     // Read
-    // retourne une liste de films
     public List<Film> MdlF_GetAll() {
         PreparedStatement stmt = null;
         List<Film> listeFilms = new ArrayList<Film>();
 
         try {
-            //conn = getConnection();
             conn = DriverManager.getConnection(URL_BD, USAGER, PASS);
             stmt = conn.prepareStatement(GET_ALL);
             ResultSet rs = stmt.executeQuery();
 
-            while (rs.next()) { // on obtient la liste de tous les films et on va ligne par ligne
+            while (rs.next()) { 
                 Film film = new Film();
                 film.setIdf(rs.getInt("idf"));
                 film.setTitre(rs.getString("titre"));
@@ -117,7 +102,6 @@ public class DaoFilm implements IFilmDao {
                 listeFilms.add(film);
             }
         } catch (SQLException e) {
-            // e.printStackTrace();
             throw new RuntimeException(e);
         } finally {
             MdlF_Fermer(stmt);
@@ -132,7 +116,6 @@ public class DaoFilm implements IFilmDao {
 
         try {
             conn = DriverManager.getConnection(URL_BD, USAGER, PASS);
-            //conn = getConnection();// DriverManager.getConnection(URL_BD, USAGER, PASS);
             stmt = conn.prepareStatement(GET_BY_ID);
             stmt.setInt(1, idf);
 
@@ -152,8 +135,6 @@ public class DaoFilm implements IFilmDao {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             return null;
-            // e.printStackTrace();
-            // throw new RuntimeException(e);
         } finally {
             MdlF_Fermer(stmt);
             MdlF_Fermer(conn);
@@ -164,7 +145,6 @@ public class DaoFilm implements IFilmDao {
         PreparedStatement stmt = null;
 
         try {
-            //conn = getConnection();
             conn = DriverManager.getConnection(URL_BD, USAGER, PASS);
             stmt = conn.prepareStatement(GET_BY_TITRE);
             stmt.setString(1, titre);
@@ -184,7 +164,6 @@ public class DaoFilm implements IFilmDao {
                 return null;
             }
         } catch (SQLException e) {
-            // e.printStackTrace();
             throw new RuntimeException(e);
         } finally {
             MdlF_Fermer(stmt);
@@ -192,16 +171,13 @@ public class DaoFilm implements IFilmDao {
         }
     }
 
-    // Update, faudrat avant appeler MdlF_GetById(idf) pour obtenir
-    // les données du film à modifier via une interface et après envoyer
-    // ce film à MdlF_Modifier(film) pour faire la mise à jour.
+    //Update
     public int MdlF_Modifier(Film film) {
         PreparedStatement stmt = null;
         int reponse = -1;
         try {
             conn = DriverManager.getConnection(URL_BD, USAGER, PASS);
-            //conn = getConnection();
-            stmt = conn.prepareStatement(MODIFIER); // on appele la requete modifier
+            stmt = conn.prepareStatement(MODIFIER); 
             stmt.setString(1, film.getTitre());
             stmt.setInt(2, film.getDuree());
             stmt.setString(3, film.getRes());
@@ -210,7 +186,6 @@ public class DaoFilm implements IFilmDao {
 
             reponse = stmt.executeUpdate();
         } catch (SQLException e) {
-            // e.printStackTrace();
             throw new RuntimeException(e);
         } finally {
             MdlF_Fermer(stmt);
@@ -225,13 +200,11 @@ public class DaoFilm implements IFilmDao {
         int reponse = -1;
         try {
             conn = DriverManager.getConnection(URL_BD, USAGER, PASS);
-            //conn = getConnection();
             stmt = conn.prepareStatement(SUPPRIMER);
             stmt.setInt(1, idf);
 
             reponse = stmt.executeUpdate();
         } catch (SQLException e) {
-            // e.printStackTrace();
             throw new RuntimeException(e);
         } finally {
             MdlF_Fermer(stmt);
@@ -245,7 +218,6 @@ public class DaoFilm implements IFilmDao {
             try {
                 conn.close();
             } catch (SQLException e) {
-                // e.printStackTrace();
                 throw new RuntimeException(e);
             }
         }
@@ -256,7 +228,6 @@ public class DaoFilm implements IFilmDao {
             try {
                 stmt.close();
             } catch (SQLException e) {
-                // e.printStackTrace();
                 throw new RuntimeException(e);
             }
         }

@@ -3,10 +3,8 @@ import java.util.ArrayList;
 
 import edu.java.dao.models.modelFilm.Film;
 
-//dans asp.net est toujours extends, une interface commence par la lettre I
 
 public interface IActionsFilm {
-    // Pour le CRUD - Create Read Update Delete
 
     // Create
     public String CtrF_Enregistrer(Film film);

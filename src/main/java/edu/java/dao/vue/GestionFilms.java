@@ -72,7 +72,6 @@ public class GestionFilms {
 		JButton btnlisterfilms = new JButton("Lister films");
 		btnlisterfilms.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//ControleurFilm instance = ControleurFilm.getControleurFilm();
 				ArrayList<Film> films = instance.CtrF_GetAllFilms();
 				String[][] tab = new String[films.size()][];
 				int index = 0;
@@ -86,6 +85,7 @@ public class GestionFilms {
 				TableLister.afficher("Films", tab, enTete);
 			}
 		});
+		
 		btnlisterfilms.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		frame.getContentPane().add(btnlisterfilms);
 
@@ -104,12 +104,12 @@ public class GestionFilms {
 				String numeroFilm = JOptionPane.showInputDialog(null, "Entrez le numéro du film à modifier :",
 						"MODIFIER FILM",
 						JOptionPane.PLAIN_MESSAGE);
-				if (numeroFilm != null){//pour gerer si on press cancel
+				if (numeroFilm != null){
 					if (numeroFilm.length() > 0) {
-					//System.out.println(1);
+
 					ControleurFilm instance = ControleurFilm.getControleurFilm();
 					Film lefilm = instance.CtrF_GetFilmById(Integer.parseInt(numeroFilm));
-					//System.out.println(lefilm.getDuree());
+
 					Modifierfilm.main(lefilm);
 				} else {
 					JOptionPane.showMessageDialog(null, "Rentrez un numéro du film",
